@@ -24,14 +24,14 @@ public class WireButtonScript : MonoBehaviour
         if(tilemapClick.cablePlacemenet == false)
         {
             tilemapClick.cablePlacemenet = true;   
-            Debug.Log("You can place Cables");
+            // Debug.Log("You can place Cables");
         } 
         else 
         {
             tilemapClick.cablePlacemenet = false;
             Debug.Log("You cannot place Cables");
 
-            Debug.Log(tilemapClick.Wires.Count);
+            Debug.Log(tilemapClick.WireList.Count);
         }
     }
 }

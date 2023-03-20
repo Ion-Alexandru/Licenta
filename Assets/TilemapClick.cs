@@ -11,7 +11,7 @@ public class TilemapClick : MonoBehaviour
 
     public bool cablePlacemenet = false;
 
-    public List<Wire> Wires = new List<Wire>();
+    public List<Wire> WireList = new List<Wire>();
 
     private void Start()
     {
@@ -20,18 +20,20 @@ public class TilemapClick : MonoBehaviour
 
     private void Update() 
     {
-        // if(Input.GetKeyDown(KeyCode.Alpha1))
-        // {
-        //     cablePlacemenet = true;
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            cablePlacemenet = true;
 
-        // } 
+        } 
         
-        // if (Input.GetKeyUp(KeyCode.Alpha1) && cablePlacemenet == true)
-        // {
-        //     cablePlacemenet = false;
+        if (Input.GetKeyUp(KeyCode.Alpha1) && cablePlacemenet == true)
+        {
+            cablePlacemenet = false;
 
-        //     Debug.Log("You cannot place Cables anymore!");
-        // }
+            Debug.Log("You cannot place wires anymore!");
+
+            Debug.Log(WireList.Count);
+        }
 
         if(cablePlacemenet == true && Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -41,103 +43,101 @@ public class TilemapClick : MonoBehaviour
             //Debug.Log("Tile clicked at " + cellPosition);
 
             // Place the rule tile at the given position.
-            if (Wires.Count > 0)
-            {
-                bool connectedToExistingWire = false;
-                Wire existingWire = null;
-                Vector3Int existingWirePart = default;
+            // if (WireList.Count > 0)
+            // {
+            //     foreach (Wire wire in WireList)
+            //     {
+            //         if(wire.isNearExistingWirePart(cellPosition))
+            //         {
+            //             wire.AddWirePart(cellPosition);
 
-                // Check if there is already a wirePart on the right, left, up or down of the ruleTile
-                foreach (Wire w in Wires)
+            //             // Set the tile at the given position to the rule tile
+            //             tilemap.SetTile(cellPosition, ruleTile);
+
+            //             Debug.Log("That part is near an existing wire");
+
+            //             break;
+            //         } 
+            //         else if(wire.isWireNearWire(cellPosition, otherWire))
+            //         {
+            //             // Set the tile at the given position to the rule tile
+            //             tilemap.SetTile(cellPosition, ruleTile);
+
+            //             Debug.Log("That wire was near another wire");
+
+            //             break;
+            //         } 
+            //         else
+            //         {
+            //             Wire newWire = new Wire(tilemap);
+            //             newWire.AddWirePart(cellPosition);
+            //             WireList.Add(newWire);
+
+            //             // Set the tile at the given position to the rule tile
+            //             tilemap.SetTile(cellPosition, ruleTile);
+
+            //             Debug.Log("Here a new wire would be placed");
+
+            //             break;
+            //         }
+            //     }
+            // } else 
+            // {
+            //     Wire newWire = new Wire(tilemap);
+            //     newWire.AddWirePart(cellPosition);
+            //     WireList.Add(newWire);
+
+            //     // Set the tile at the given position to the rule tile
+            //     tilemap.SetTile(cellPosition, ruleTile);
+            // }
+            if (WireList.Count > 0)
+            {
+                foreach (Wire wire in WireList)
                 {
-                    foreach (Vector3Int wirePart in w.wireParts)
+                    // Iterate over all other wires in the list
+                    foreach (Wire otherWire in WireList)
                     {
-                        if ((wirePart.x == cellPosition.x + 1 && wirePart.y == cellPosition.y) ||
-                            (wirePart.x == cellPosition.x - 1 && wirePart.y == cellPosition.y) ||
-                            (wirePart.x == cellPosition.x && wirePart.y == cellPosition.y + 1) ||
-                            (wirePart.x == cellPosition.x && wirePart.y == cellPosition.y - 1))
+                        if (wire != otherWire && otherWire.isWireNearWire(cellPosition, wire))
                         {
-                            connectedToExistingWire = true;
-                            existingWire = w;
-                            existingWirePart = wirePart;
-                            break;
+                            // Set the tile at the given position to the rule tile
+                            tilemap.SetTile(cellPosition, ruleTile);
+
+                            Debug.Log("That wire was near another wire");
+
+                            return;
                         }
                     }
 
-                    if (connectedToExistingWire)
+                    if(wire.isNearExistingWirePart(cellPosition))
                     {
-                        break;
-                    }
+                        wire.AddWirePart(cellPosition);
+
+                        // Set the tile at the given position to the rule tile
+                        tilemap.SetTile(cellPosition, ruleTile);
+
+                        Debug.Log("That part is near an existing wire");
+
+                        return;
+                    } 
                 }
 
-                if (connectedToExistingWire)
-                {
-                    // Add the new wirePart to the existing wire
-                    existingWire.AddWirePart(cellPosition);
-
-                    // Merge existing wire with other wires that are connected to the existing wire part
-                    foreach (Wire w in Wires)
-                    {
-                        if (w != existingWire && w.ContainsWirePart(existingWirePart))
-                        {
-                            existingWire.MergeWith(w);
-                            Wires.Remove(w);
-                        }
-                    }
-
-                    Debug.Log("Connected to existing wire.");
-                }
-                else
-                {
-                    // Create a new wire for the tile
-                    Wire newWire = new Wire(tilemap);
-                    newWire.AddWirePart(cellPosition);
-                    Wires.Add(newWire);
-
-                    Debug.Log("Created new wire for tile at " + cellPosition);
-                }
-            }
-            else
-            {
-                // Create a new wire for the tile
                 Wire newWire = new Wire(tilemap);
                 newWire.AddWirePart(cellPosition);
-                Wires.Add(newWire);
-
-                Debug.Log("Created new wire for tile at " + cellPosition);                            
-
-                // Wire wire = new Wire(tilemap, cellPosition);
-                // wire.UpdateConnectedTiles(cellPosition);
-                // tilemap.SetTile(cellPosition, ruleTile);
-
-                // wire.Voltage = 12f;
-                // wire.Resistance = 0.5f;
-            }
-
-            // Verify if there is already a wire at that cellPosition
-            bool wireExistsAtPosition = false;
-            foreach (Wire w in Wires)
-            {
-                if (w.ContainsWirePart(cellPosition))
-                {
-                    wireExistsAtPosition = true;
-                    break;
-                }
-            }
-
-            if (!wireExistsAtPosition)
-            {
-                // Create a new wire for the tile
-                Wire newWire = new Wire(tilemap);
-                Wires.Add(newWire);
-                Debug.Log("Created new wire for tile at " + cellPosition);
+                WireList.Add(newWire);
 
                 // Set the tile at the given position to the rule tile
                 tilemap.SetTile(cellPosition, ruleTile);
+
+                Debug.Log("Here a new wire would be placed");
             }
-            else
+            else 
             {
-                Debug.Log("Wire already exists at " + cellPosition);
+                Wire newWire = new Wire(tilemap);
+                newWire.AddWirePart(cellPosition);
+                WireList.Add(newWire);
+
+                // Set the tile at the given position to the rule tile
+                tilemap.SetTile(cellPosition, ruleTile);
             }
         }
     }

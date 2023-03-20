@@ -43,8 +43,46 @@ public class Wire
         }
     }
 
-    public bool ContainsWirePart(Vector3Int position)
+    public bool isNearExistingWirePart(Vector3Int position)
     {
-        return wireParts.Contains(position);
+        foreach (Vector3Int wirePart in wireParts)
+        {
+            if( position.x - 1 == wirePart.x && position.y == wirePart.y ||
+                position.x + 1 == wirePart.x && position.y == wirePart.y ||
+                position.x == wirePart.x && position.y - 1 == wirePart.y ||
+                position.x == wirePart.x && position.y + 1 == wirePart.y )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool isWireNearWire(Vector3Int position, Wire otherWire)
+    {
+        foreach(Vector3Int wirePart in wireParts)
+        {
+            if( position.x - 1 == wirePart.x && position.y == wirePart.y ||
+                position.x + 1 == wirePart.x && position.y == wirePart.y ||
+                position.x == wirePart.x && position.y - 1 == wirePart.y ||
+                position.x == wirePart.x && position.y + 1 == wirePart.y )
+            {
+                foreach (Vector3Int wirePartOther in otherWire.wireParts)
+                {
+                    if( position.x - 1 == wirePartOther.x && position.y == wirePartOther.y ||
+                        position.x + 1 == wirePartOther.x && position.y == wirePartOther.y ||
+                        position.x == wirePartOther.x && position.y - 1 == wirePartOther.y ||
+                        position.x == wirePartOther.x && position.y + 1 == wirePartOther.y )
+                    {
+                        // Merge the wires
+                        MergeWith(otherWire);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }
