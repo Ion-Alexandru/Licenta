@@ -834,25 +834,25 @@ Tilemap:
   m_TileMatrixArray:
   - m_RefCount: 0
     m_Data:
-      e00: 0
+      e00: -2.208309e+15
       e01: 0
       e02: -2.1006438e-19
       e03: -2.1006438e-19
-      e10: 0
+      e10: 5.63e-43
       e11: 0
-      e12: 6.92e-43
-      e13: 6.92e-43
-      e20: -4.798216e+33
+      e12: 5.63e-43
+      e13: 5.63e-43
+      e20: -0.011082172
       e21: 1e-45
-      e22: 5.3955553e-29
-      e23: 4.659002e-10
-      e30: 4.5904e-41
+      e22: 2.2442423e-19
+      e23: 2.0212173
+      e30: 4.5905e-41
       e31: 0
-      e32: 6.94e-43
-      e33: 6.96e-43
+      e32: 5.65e-43
+      e33: 5.68e-43
   m_TileColorArray:
   - m_RefCount: 0
-    m_Data: {r: 3.3469e-41, g: 3.3469e-41, b: 3.3469e-41, a: 3.3469e-41}
+    m_Data: {r: 3.3763e-41, g: 3.3763e-41, b: 3.3763e-41, a: 3.3763e-41}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -890,8 +890,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilemap: {fileID: 2093536151}
-  ruleTile: {fileID: 11400000, guid: 43e0988c316a6ad4e96dcb0f9faf51a9, type: 2}
-  cablePlacemenet: 0
+  wireTile: {fileID: 11400000, guid: 43e0988c316a6ad4e96dcb0f9faf51a9, type: 2}
+  pushButtonUnpressedTile: {fileID: 11400000, guid: a480491677cd7934facaec705cdd5f34, type: 2}
+  pushButtonPressedTile: {fileID: 11400000, guid: 012a9f3ff1d4c6c4597affdb49de2a29, type: 2}
+  diodeTile: {fileID: 11400000, guid: 105c20fef2aac4c40bc49cd0e3fcda29, type: 2}
+  unlitDiodeTile: {fileID: 11400000, guid: 105c20fef2aac4c40bc49cd0e3fcda29, type: 2}
+  litDiodeTile: {fileID: 11400000, guid: 2bbd027aa2956dc459a0f5754db178eb, type: 2}
+  groundTile: {fileID: 11400000, guid: 2aefe2ea4eab85940bb22027c49b87a8, type: 2}
+  wirePlacemenet: 0
+  pushButtonPlacement: 0
+  diodePlacement: 0
+  groundPlacement: 0
 --- !u!61 &2093536153
 BoxCollider2D:
   m_ObjectHideFlags: 0

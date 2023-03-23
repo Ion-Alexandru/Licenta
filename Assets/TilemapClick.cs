@@ -6,12 +6,25 @@ using UnityEngine.Tilemaps;
 public class TilemapClick : MonoBehaviour
 {
     public Tilemap tilemap;
+    PushButton pushButton;
 
-    public TileBase ruleTile;
+    public TileBase wireTile;
+    public TileBase pushButtonUnpressedTile;
+    public TileBase pushButtonPressedTile;
+    public TileBase diodeTile;
+    public TileBase unlitDiodeTile;
+    public TileBase litDiodeTile;
+    public TileBase groundTile;
 
-    public bool cablePlacemenet = false;
+    public bool wirePlacemenet = false;
+    public bool pushButtonPlacement = false;
+    public bool diodePlacement = false;
+    public bool groundPlacement = false;
 
-    public List<Wire> WireList = new List<Wire>();
+    public List<Wire> wireList = new List<Wire>();
+    public List<PushButton> pushButtonList = new List<PushButton>();
+    public List<Diode> diodeList = new List<Diode>();
+    public List<Ground> groundList = new List<Ground>();
 
     private void Start()
     {
@@ -20,39 +33,100 @@ public class TilemapClick : MonoBehaviour
 
     private void Update() 
     {
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            cablePlacemenet = true;
+        Vector3 mousePosition = Input.mousePosition;
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
 
+        pushButtonClick(cellPosition);
+
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            diodePlacement = true;
         } 
         
-        if (Input.GetKeyUp(KeyCode.Alpha1) && cablePlacemenet == true)
+        if (Input.GetKeyUp(KeyCode.Alpha2))
         {
-            cablePlacemenet = false;
-
-            Debug.Log("You cannot place wires anymore!");
-
-            Debug.Log(WireList.Count);
+            diodePlacement = false;
         }
 
-        if(cablePlacemenet == true && Input.GetKeyDown(KeyCode.Mouse0))
+        if(Input.GetKeyDown(KeyCode.Alpha1))
         {
-            Vector3 mousePosition = Input.mousePosition;
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
+            pushButtonPlacement = true;
+        } 
+        
+        if (Input.GetKeyUp(KeyCode.Alpha1))
+        {
+            pushButtonPlacement = false;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            groundPlacement = true;
+        } 
+        
+        if (Input.GetKeyUp(KeyCode.Alpha3))
+        {
+            groundPlacement = false;
+        }
+
+        if (pushButtonPlacement == true && Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            PushButton newPushButton = new PushButton(this, tilemap, cellPosition);
+            pushButtonList.Add(newPushButton);
+
+            // Set the tile at the given position to the rule tile
+            tilemap.SetTile(cellPosition, pushButtonUnpressedTile);
+        }
+
+        if (diodePlacement == true && Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            Diode newDiode = new Diode(this, tilemap, cellPosition);
+            diodeList.Add(newDiode);
+
+            // Set the tile at the given position to the rule tile
+            tilemap.SetTile(cellPosition, diodeTile);
+        }
+
+        if (groundPlacement == true && Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            Ground newGround = new Ground(this, tilemap, cellPosition);
+            groundList.Add(newGround);
+
+            // Set the tile at the given position to the rule tile
+            tilemap.SetTile(cellPosition, groundTile);
+        }
+
+        foreach (PushButton button in pushButtonList)
+        {
+            button.givePower();
+            button.isPushButtonPressed(pushButtonUnpressedTile, pushButtonPressedTile);
+        }
+
+        foreach (Diode diode in diodeList)
+        {
+            diode.isPowred(unlitDiodeTile, litDiodeTile);
+        }
+
+        foreach (Ground ground in groundList)
+        {
+            ground.giveGround();
+        }
+
+        if(wirePlacemenet == true && Input.GetKeyDown(KeyCode.Mouse0))
+        {
             //Debug.Log("Tile clicked at " + cellPosition);
 
             // Place the rule tile at the given position.
-            // if (WireList.Count > 0)
+            // if (wireList.Count > 0)
             // {
-            //     foreach (Wire wire in WireList)
+            //     foreach (Wire wire in wireList)
             //     {
             //         if(wire.isNearExistingWirePart(cellPosition))
             //         {
             //             wire.AddWirePart(cellPosition);
 
             //             // Set the tile at the given position to the rule tile
-            //             tilemap.SetTile(cellPosition, ruleTile);
+            //             tilemap.SetTile(cellPosition, wireTile);
 
             //             Debug.Log("That part is near an existing wire");
 
@@ -61,7 +135,7 @@ public class TilemapClick : MonoBehaviour
             //         else if(wire.isWireNearWire(cellPosition, otherWire))
             //         {
             //             // Set the tile at the given position to the rule tile
-            //             tilemap.SetTile(cellPosition, ruleTile);
+            //             tilemap.SetTile(cellPosition, wireTile);
 
             //             Debug.Log("That wire was near another wire");
 
@@ -71,10 +145,10 @@ public class TilemapClick : MonoBehaviour
             //         {
             //             Wire newWire = new Wire(tilemap);
             //             newWire.AddWirePart(cellPosition);
-            //             WireList.Add(newWire);
+            //             wireList.Add(newWire);
 
             //             // Set the tile at the given position to the rule tile
-            //             tilemap.SetTile(cellPosition, ruleTile);
+            //             tilemap.SetTile(cellPosition, wireTile);
 
             //             Debug.Log("Here a new wire would be placed");
 
@@ -85,24 +159,24 @@ public class TilemapClick : MonoBehaviour
             // {
             //     Wire newWire = new Wire(tilemap);
             //     newWire.AddWirePart(cellPosition);
-            //     WireList.Add(newWire);
+            //     wireList.Add(newWire);
 
             //     // Set the tile at the given position to the rule tile
-            //     tilemap.SetTile(cellPosition, ruleTile);
+            //     tilemap.SetTile(cellPosition, wireTile);
             // }
-            if (WireList.Count > 0)
+            if (wireList.Count > 0)
             {
-                foreach (Wire wire in WireList)
+                foreach (Wire wire in wireList)
                 {
                     // Iterate over all other wires in the list
-                    foreach (Wire otherWire in WireList)
+                    foreach (Wire otherWire in wireList)
                     {
                         if (wire != otherWire && otherWire.isWireNearWire(cellPosition, wire))
                         {
                             // Set the tile at the given position to the rule tile
-                            tilemap.SetTile(cellPosition, ruleTile);
+                            tilemap.SetTile(cellPosition, wireTile);
 
-                            Debug.Log("That wire was near another wire");
+                            // Debug.Log("That wire was near another wire");
 
                             return;
                         }
@@ -113,9 +187,9 @@ public class TilemapClick : MonoBehaviour
                         wire.AddWirePart(cellPosition);
 
                         // Set the tile at the given position to the rule tile
-                        tilemap.SetTile(cellPosition, ruleTile);
+                        tilemap.SetTile(cellPosition, wireTile);
 
-                        Debug.Log("That part is near an existing wire");
+                        // Debug.Log("That part is near an existing wire");
 
                         return;
                     } 
@@ -123,21 +197,44 @@ public class TilemapClick : MonoBehaviour
 
                 Wire newWire = new Wire(tilemap);
                 newWire.AddWirePart(cellPosition);
-                WireList.Add(newWire);
+                wireList.Add(newWire);
 
                 // Set the tile at the given position to the rule tile
-                tilemap.SetTile(cellPosition, ruleTile);
+                tilemap.SetTile(cellPosition, wireTile);
 
-                Debug.Log("Here a new wire would be placed");
+                // Debug.Log("Here a new wire would be placed");
             }
-            else 
+            else
             {
                 Wire newWire = new Wire(tilemap);
                 newWire.AddWirePart(cellPosition);
-                WireList.Add(newWire);
+                wireList.Add(newWire);
 
                 // Set the tile at the given position to the rule tile
-                tilemap.SetTile(cellPosition, ruleTile);
+                tilemap.SetTile(cellPosition, wireTile);
+            }
+        }
+    }
+
+    void pushButtonClick(Vector3Int mousePosition)
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            foreach(PushButton pushButton in pushButtonList)
+            {
+                if(mousePosition == pushButton.position){
+                    pushButton.isPressed = true;
+                }
+            }
+        }
+
+        if(Input.GetMouseButtonUp(0))
+        {
+            foreach(PushButton pushButton in pushButtonList)
+            {
+                if(mousePosition == pushButton.position){
+                    pushButton.isPressed = false;
+                }
             }
         }
     }

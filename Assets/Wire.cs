@@ -6,15 +6,13 @@ public class Wire
 {
     private Tilemap tilemap;
     public List<Vector3Int> wireParts;
-    private float voltage;
-    private float resistance;
+    public bool isPowered = false;
+    public bool isGrounded = false;
 
     public Wire(Tilemap tilemap)
     {
         this.tilemap = tilemap;
         wireParts = new List<Vector3Int>();
-        voltage = 0f;
-        resistance = 0f;
     }
 
     public void AddWirePart(Vector3Int position)
@@ -82,7 +80,6 @@ public class Wire
                 }
             }
         }
-
         return false;
     }
 }

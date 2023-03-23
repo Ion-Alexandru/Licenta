@@ -21,17 +21,17 @@ public class WireButtonScript : MonoBehaviour
 
     public void OnClick()
     {
-        if(tilemapClick.cablePlacemenet == false)
+        if(tilemapClick.wirePlacemenet == false)
         {
-            tilemapClick.cablePlacemenet = true;   
+            tilemapClick.wirePlacemenet = true;   
             // Debug.Log("You can place Cables");
         } 
         else 
         {
-            tilemapClick.cablePlacemenet = false;
-            Debug.Log("You cannot place Cables");
+            tilemapClick.wirePlacemenet = false;
+            // Debug.Log("You cannot place wires");
 
-            Debug.Log(tilemapClick.WireList.Count);
+            Debug.Log(tilemapClick.wireList.Count);
         }
     }
 }
